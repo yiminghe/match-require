@@ -47,4 +47,37 @@ describe('match require', function () {
     });
   });
 
+  describe('splitPackageName',function(){
+    it('works for xx',function(){
+      var name ='xx';
+      expect(matchRequire.splitPackageName(name)).to.eql({
+        packageName:'xx',
+        suffix:''
+      });
+    });
+
+    it('works for xx/yy',function(){
+      var name ='xx/yy';
+      expect(matchRequire.splitPackageName(name)).to.eql({
+        packageName:'xx',
+        suffix:'/yy'
+      });
+    });
+
+    it('works for @xx/yy',function(){
+      var name ='@xx/yy';
+      expect(matchRequire.splitPackageName(name)).to.eql({
+        packageName:'@xx/yy',
+        suffix:''
+      });
+    });
+
+    it('works for @xx/yy/zz',function(){
+      var name ='@xx/yy/zz';
+      expect(matchRequire.splitPackageName(name)).to.eql({
+        packageName:'@xx/yy',
+        suffix:'/zz'
+      });
+    });
+  });
 });

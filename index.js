@@ -25,7 +25,30 @@ function replaceAll(content, fn) {
   return commentUtil.restoreComments(content, contentComment.comments);
 }
 
+function splitPackageName(moduleName) {
+  var index = moduleName.indexOf('/');
+  if (index !== -1) {
+    // support domain package
+    // require('@ali/matrix')
+    if (moduleName.charAt(0) === '@') {
+      index = moduleName.indexOf('/', index + 1);
+    }
+  }
+  if (index !== -1) {
+    return {
+      packageName: moduleName.slice(0, index),
+      suffix: moduleName.slice(index)
+    };
+  } else {
+    return {
+      packageName: moduleName,
+      suffix: ''
+    };
+  }
+}
+
 module.exports = {
   findAll: findAll,
-  replaceAll: replaceAll
+  replaceAll: replaceAll,
+  splitPackageName: splitPackageName
 };
