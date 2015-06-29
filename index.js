@@ -1,3 +1,5 @@
+'use strict';
+
 var requireRegExp = /(?:[^.]|^)\s*require\s*\((['"])([^)]+)\1\)/g;
 var commentUtil = require('./lib/commentUtil');
 
