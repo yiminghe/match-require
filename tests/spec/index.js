@@ -1,17 +1,5 @@
-# match-require
-
-[![NPM version](https://nodei.co/npm/match-require.png)](https://npmjs.org/package/match-require)
-[![NPM downloads](http://img.shields.io/npm/dm/match-require.svg)](https://npmjs.org/package/match-require)
-[![Build Status](https://travis-ci.org/yiminghe/match-require.svg?branch=master)](https://travis-ci.org/yiminghe/match-require)
-[![Coverage Status](https://coveralls.io/repos/yiminghe/match-require/badge.png?branch=master)](https://coveralls.io/r/yiminghe/match-require?branch=master)
-
-find require calls from string using regexp
-
-## examples
-
-```js
 var expect = require('expect.js');
-var matchRequire = require('match-require');
+var matchRequire = require('../../');
 
 describe('match require', function () {
   it('findAll works', function () {
@@ -60,5 +48,3 @@ describe('match require', function () {
   });
 
 });
-
-```
