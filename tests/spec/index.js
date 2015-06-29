@@ -80,4 +80,18 @@ describe('match require', function () {
       });
     });
   });
+
+  describe('isRelativeModule',function(){
+    it('works for xx',function(){
+      expect(matchRequire.isRelativeModule('xx')).to.be(false);
+    });
+
+    it('works for ../x',function(){
+      expect(matchRequire.isRelativeModule('../xx')).to.be(true);
+    });
+
+    it('works for ./x',function(){
+      expect(matchRequire.isRelativeModule('./xx')).to.be(true);
+    });
+  });
 });

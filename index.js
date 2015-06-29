@@ -47,8 +47,15 @@ function splitPackageName(moduleName) {
   }
 }
 
+function startsWith(str, prefix) {
+  return str.slice(0, prefix.length) === prefix;
+}
+
 module.exports = {
   findAll: findAll,
   replaceAll: replaceAll,
-  splitPackageName: splitPackageName
+  splitPackageName: splitPackageName,
+  isRelativeModule: function (dep) {
+    return startsWith(dep, './') || startsWith(dep, '../');
+  }
 };
