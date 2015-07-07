@@ -1,6 +1,6 @@
 {
   "name": "match-require",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "find require calls from string using regexp",
   "keywords": [
     "require",

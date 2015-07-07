@@ -1,6 +1,6 @@
 'use strict';
 
-var requireRegExp = /(?:[^.]|^)\s*require\s*\((['"])([^)]+)\1\)/g;
+var requireRegExp = /(?:[^.]|^)\s*require\s*\(\s*(['"])([^)]+)\1\s*\)/g;
 var commentUtil = require('./lib/commentUtil');
 
 function findAll(content) {
