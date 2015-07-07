@@ -1,6 +1,7 @@
 'use strict';
 
 var requireRegExp = /(?:[^.]|^)\s*require\s*\(\s*(['"])([^)]+)\1\s*\)/g;
+var importRegExp = /(?:[^.]|^)\s*import[^'"\r\n]+(['"])([^'"]+)\1\s*;/g;
 var commentUtil = require('./lib/commentUtil');
 
 function findAll(content) {
@@ -14,6 +15,19 @@ function findAll(content) {
   }
   return ret;
 }
+
+function findAllImports(content) {
+  var contentComment = commentUtil.stashJsComments(content);
+  content = contentComment.content;
+  var ret = [];
+  importRegExp.lastIndex = 0;
+  var result;
+  while ((result = importRegExp.exec(content)) != null) {
+    ret.push(result[2]);
+  }
+  return ret;
+}
+
 
 function replaceAll(content, fn) {
   var contentComment = commentUtil.stashJsComments(content);
@@ -53,6 +67,7 @@ function startsWith(str, prefix) {
 
 module.exports = {
   findAll: findAll,
+  findAllImports:findAllImports,
   replaceAll: replaceAll,
   splitPackageName: splitPackageName,
   isRelativeModule: function (dep) {
