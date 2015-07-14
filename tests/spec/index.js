@@ -27,6 +27,14 @@ describe('match require', function () {
       expect(ret).to.eql([['require("2")', '"', '2']]);
     });
 
+    it('keep line number',function(){
+      var content = 'require(\n\n"2"\n)';
+      var content2 = matchRequire.replaceAll(content, function (match, quote, dep) {
+        return 'window.x';
+      });
+      expect(content2).to.be('window.x\n\n\n');
+    });
+
 
     it('works complex', function () {
       var content = ['// require("2")',
