@@ -12,7 +12,7 @@ describe('match import', function () {
  x,
  y,
  z,
-} from "5";'`,
+} from "5";`,
     ].join('\n');
 
     var ret = matchRequire.findAllImports(content);
