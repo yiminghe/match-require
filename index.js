@@ -1,57 +1,42 @@
 'use strict';
 
-var requireRegExp = /(?:[^.]|^)\s*require\s*\((\s*(['"])[^)'"]+\2\s*)\)/g;
-var importRegExp = /(?:[^.]|^)\s*import[^'"]+(['"])([^'"]+)\1\s*;/g;
-var commentUtil = require('./lib/commentUtil');
-
-function repeat(s, n) {
-  var ret = '';
-  for (var i = 0; i < n; i++) {
-    ret += s;
-  }
-  return ret;
-}
-
-function findAll(content) {
-  var contentComment = commentUtil.stashJsComments(content);
-  content = contentComment.content;
-  var ret = [];
-  requireRegExp.lastIndex = 0;
-  var result;
-  while ((result = requireRegExp.exec(content)) != null) {
-    ret.push(result[1].trim().slice(1, -1));
-  }
-  return ret;
-}
-
-function findAllImports(content) {
-  var contentComment = commentUtil.stashJsComments(content);
-  content = contentComment.content;
-  var ret = [];
-  importRegExp.lastIndex = 0;
-  var result;
-  while ((result = importRegExp.exec(content)) != null) {
-    ret.push(result[2]);
-  }
-  return ret;
-}
+const IMPORT_RE = /(\bimport\s+(?:[^'"]+\s+from\s+)??)(['"])([^'"]+)(\2)/g;
+const EXPORT_RE = /(\bexport\s+(?:[^'"]+\s+from\s+)??)(['"])([^'"]+)(\2)/g;
+const REQUIRE_RE = /(\brequire\s*?\(\s*?)(['"])([^'"]+)(\2\s*?\))/g;
 
 
-function replaceAll(content, fn) {
-  var contentComment = commentUtil.stashJsComments(content);
-  content = contentComment.content;
-  content = content.replace(requireRegExp, function (match, rawDep) {
-    var expectLines = rawDep.split(/\n/).length - 1;
-    var dep = rawDep.trim();
-    var quote = dep.charAt(0);
-    dep = dep.slice(1, -1);
-    var leading = match.match(/^(.?\s*)require\s*\(/)[1];
-    var ret = fn(match.slice(leading.length), quote, dep);
-    var actualLines = ret.split(/\n/).length - 1;
-    actualLines = Math.max(expectLines - actualLines, 0);
-    return leading + ret + repeat('\n', actualLines);
-  });
-  return commentUtil.restoreComments(content, contentComment.comments);
+/**
+ * Extract all required modules from a `code` string.
+ */
+const blockCommentRe = /\/\*(.|\n)*?\*\//g;
+const lineCommentRe = /\/\/.+(\n|$)/g;
+
+// from react-native packager
+function findAll(code) {
+  var deps = [];
+
+  code
+    .replace(blockCommentRe, '')
+    .replace(lineCommentRe, '')
+    // Parse the sync dependencies this module has. When the module is
+    // required, all it's sync dependencies will be loaded into memory.
+    // Sync dependencies can be defined either using `require` or the ES6
+    // `import` or `export` syntaxes:
+    //   var dep1 = require('dep1');
+    .replace(IMPORT_RE, (match, pre, quot, dep, post) => {
+      deps.push(dep);
+      return match;
+    })
+    .replace(EXPORT_RE, (match, pre, quot, dep, post) => {
+      deps.push(dep);
+      return match;
+    })
+    .replace(REQUIRE_RE, (match, pre, quot, dep, post) => {
+      deps.push(dep);
+      return match;
+    });
+
+  return deps;
 }
 
 function splitPackageName(moduleName) {
@@ -82,8 +67,7 @@ function startsWith(str, prefix) {
 
 module.exports = {
   findAll: findAll,
-  findAllImports: findAllImports,
-  replaceAll: replaceAll,
+  findAllImports: findAll,
   splitPackageName: splitPackageName,
   isRelativeModule: function (dep) {
     return startsWith(dep, './') || startsWith(dep, '../');
