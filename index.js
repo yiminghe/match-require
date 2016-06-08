@@ -23,15 +23,15 @@ function findAll(code) {
     // Sync dependencies can be defined either using `require` or the ES6
     // `import` or `export` syntaxes:
     //   var dep1 = require('dep1');
-    .replace(IMPORT_RE, (match, pre, quot, dep, post) => {
+    .replace(IMPORT_RE, function (match, pre, quot, dep, post) {
       deps.push(dep);
       return match;
     })
-    .replace(EXPORT_RE, (match, pre, quot, dep, post) => {
+    .replace(EXPORT_RE, function (match, pre, quot, dep, post) {
       deps.push(dep);
       return match;
     })
-    .replace(REQUIRE_RE, (match, pre, quot, dep, post) => {
+    .replace(REQUIRE_RE, function (match, pre, quot, dep, post) {
       deps.push(dep);
       return match;
     });
