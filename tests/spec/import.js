@@ -7,11 +7,16 @@ describe('match import', function () {
       'import x from "3";',
       'console.import("1")',
       '/* import "2" */',
-      'import {z} from "4";'
+      'import {z} from "4";',
+      `import {
+ x,
+ y,
+ z,
+} from "5";`,
     ].join('\n');
 
     var ret = matchRequire.findAllImports(content);
 
-    expect(ret).to.eql(['3', '4']);
+    expect(ret).to.eql(['3', '4', '5']);
   });
 });
