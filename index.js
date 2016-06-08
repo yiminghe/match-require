@@ -1,7 +1,7 @@
 'use strict';
 
 var requireRegExp = /(?:[^.]|^)\s*require\s*\((\s*(['"])[^)'"]+\2\s*)\)/g;
-var importRegExp = /(?:[^.]|^)\s*import[^'"\r\n]+(['"])([^'"]+)\1\s*;/g;
+var importRegExp = /(?:[^.]|^)\s*import[^'"]+(['"])([^'"]+)\1\s*;/g;
 var commentUtil = require('./lib/commentUtil');
 
 function repeat(s, n) {
