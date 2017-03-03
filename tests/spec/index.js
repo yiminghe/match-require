@@ -1,5 +1,5 @@
 var expect = require('expect.js');
-var matchRequire = require('../../');
+var matchRequire = require('../../src');
 
 describe('match require', function () {
   it('findAll works', function () {

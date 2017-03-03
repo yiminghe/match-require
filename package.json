@@ -1,11 +1,15 @@
 {
   "name": "match-require",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "find require calls from string using regexp",
   "keywords": [
     "require",
     "regexp"
   ],
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index",
   "homepage": "http://github.com/yiminghe/match-require",
   "author": {
     "name": "yiminghe@gmail.com"
@@ -22,20 +26,34 @@
     "port": 8888
   },
   "scripts": {
+    "build": "rm -rf lib && babel src --out-dir lib",
     "test": "node ./node_modules/mocha/bin/mocha -R list tests/spec",
     "cover": "node ./node_modules/istanbul/lib/cli cover ./node_modules/mocha/bin/_mocha -- -R list tests/spec/",
-    "lint": "eslint index.js lib",
-    "publish": "git push origin"
+    "lint": "eslint src",
+    "pub": "npm run build && npm publish && rm -rf lib && git push origin"
   },
   "precommit": [
     "lint"
   ],
   "devDependencies": {
+    "babel-cli": "^6.7.5",
+    "babel-plugin-add-module-exports": "~0.1.2",
+    "babel-preset-es2015-ie": "^6.6.2",
+    "babel-preset-stage-0": "6.5.x",
     "eslint": "~0.24.0",
     "expect.js": "~0.3.1",
     "istanbul": "~0.2.10",
     "coveralls": "~2.10.0",
     "mocha": "~1.19.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015-ie",
+      "stage-0"
+    ],
+    "plugins": [
+      "add-module-exports"
+    ]
   },
   "dependencies": {
     "uuid": "^3.0.0"

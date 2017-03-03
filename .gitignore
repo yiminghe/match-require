@@ -26,3 +26,5 @@ spm_modules
 dist
 tests/*.css
 coverage
+yarn.lock
+lib
