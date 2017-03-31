@@ -4,7 +4,6 @@ const IMPORT_RE = /(\bimport\s+(?:[^'"]+\s+from\s+)??)(['"])([^'"]+)(\2)/g;
 const EXPORT_RE = /(\bexport\s+(?:[^'"]+\s+from\s+)??)(['"])([^'"]+)(\2)/g;
 const REQUIRE_RE = /(\brequire\s*?\(\s*?)(['"])([^'"]+)(\2\s*?\))/g;
 
-
 /**
  * Extract all required modules from a `code` string.
  */
@@ -13,7 +12,7 @@ const lineCommentRe = /\/\/.+(\n|$)/g;
 
 // from react-native packager
 function findAll(code) {
-  var deps = [];
+  const deps = [];
 
   code
     .replace(blockCommentRe, '')
@@ -22,7 +21,7 @@ function findAll(code) {
     // required, all it's sync dependencies will be loaded into memory.
     // Sync dependencies can be defined either using `require` or the ES6
     // `import` or `export` syntaxes:
-    //   var dep1 = require('dep1');
+    //   const dep1 = require('dep1');
     .replace(IMPORT_RE, function (match, pre, quot, dep, post) {
       deps.push(dep);
       return match;
@@ -39,8 +38,20 @@ function findAll(code) {
   return deps;
 }
 
+function replaceAll(code, replacer) {
+  function doIt(_match, pre, quot, dep, post) {
+    return `${pre}${quot}${replacer(dep)}${post}`;
+  }
+  return code
+    .replace(blockCommentRe, '')
+    .replace(lineCommentRe, '')
+    .replace(IMPORT_RE, doIt)
+    .replace(EXPORT_RE, doIt)
+    .replace(REQUIRE_RE, doIt);
+}
+
 function splitPackageName(moduleName) {
-  var index = moduleName.indexOf('/');
+  let index = moduleName.indexOf('/');
   if (index !== -1) {
     // support domain package
     // require('@ali/matrix')
@@ -66,9 +77,10 @@ function startsWith(str, prefix) {
 }
 
 module.exports = {
-  findAll: findAll,
+  findAll,
+  replaceAll,
   findAllImports: findAll,
-  splitPackageName: splitPackageName,
+  splitPackageName,
   isRelativeModule: function (dep) {
     return startsWith(dep, './') || startsWith(dep, '../');
   }

@@ -5,39 +5,65 @@
 [![Build Status](https://travis-ci.org/yiminghe/match-require.svg?branch=master)](https://travis-ci.org/yiminghe/match-require)
 [![Coverage Status](https://coveralls.io/repos/yiminghe/match-require/badge.svg?branch=master)](https://coveralls.io/r/yiminghe/match-require?branch=master)
 
-find require or import calls from string using regexp
+find/replace dependencies using regexp
 
 ## examples
 
 ```js
-var expect = require('expect.js');
-var matchRequire = require('match-require');
+const matchRequire = require('match-require');
 
-describe('match require', function () {
-  it('findAll works', function () {
-    var content = ['// require("2")',
+  it('findAll works', () => {
+    const content = ['// require("2")',
       'require("3");',
-      'console.require("1")',
       '/* require("2") */',
       'require("4")'
     ].join('\n');
 
-    var ret = matchRequire.findAll(content);
+    const ret = matchRequire.findAll(content);
 
     expect(ret).to.eql(['3', '4']);
   });
 
-  it('findAllImports works', function () {
-      var content = ['// import "2"',
-        'import x from "3";',
-        '/* import "2" */',
-        'import {z} from "4";'
-      ].join('\n');
+  it('replaceAll works', () => {
+    const content = ['// require("2")',
+      'require("3");',
+      '/* require("2") */',
+      'require("4")'
+    ].join('\n');
 
-      var ret = matchRequire.findAll(content);
-
-      expect(ret).to.eql(['3', '4']);
+    const ret = matchRequire.replaceAll(content, (dep) => {
+      return dep === '4' ? '5' : dep;
     });
-});
+
+    expect(ret).to.eql([
+      'require("3");',
+      '',
+      'require("5")'
+    ].join('\n'));
+  });
+
+  it('import works', () => {
+    const content = ['// import "2"',
+      'import x from "3";',
+      'console.import("1")',
+      '/* import "2" */',
+      'import {z} from "4";',
+      `import {
+ x,
+ y,
+ z,
+} from "5";`,
+    ].join('\n');
+
+    const ret = matchRequire.findAll(content);
+
+    expect(ret).to.eql(['3', '4', '5']);
+  });
 
 ```
+
+## history
+
+### 2.1.0
+
+- add replaceAll
