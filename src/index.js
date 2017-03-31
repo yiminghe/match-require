@@ -14,6 +14,11 @@ const lineCommentRe = /\/\/.+(\n|$)/g;
 function findAll(code) {
   const deps = [];
 
+  function collect(match, pre, quot, dep, post) {
+    deps.push(dep);
+    return match;
+  }
+
   code
     .replace(blockCommentRe, '')
     .replace(lineCommentRe, '')
@@ -22,18 +27,9 @@ function findAll(code) {
     // Sync dependencies can be defined either using `require` or the ES6
     // `import` or `export` syntaxes:
     //   const dep1 = require('dep1');
-    .replace(IMPORT_RE, function (match, pre, quot, dep, post) {
-      deps.push(dep);
-      return match;
-    })
-    .replace(EXPORT_RE, function (match, pre, quot, dep, post) {
-      deps.push(dep);
-      return match;
-    })
-    .replace(REQUIRE_RE, function (match, pre, quot, dep, post) {
-      deps.push(dep);
-      return match;
-    });
+    .replace(IMPORT_RE, collect)
+    .replace(EXPORT_RE, collect)
+    .replace(REQUIRE_RE, collect);
 
   return deps;
 }
@@ -42,6 +38,7 @@ function replaceAll(code, replacer) {
   function doIt(_match, pre, quot, dep, post) {
     return `${pre}${quot}${replacer(dep)}${post}`;
   }
+
   return code
     .replace(blockCommentRe, '')
     .replace(lineCommentRe, '')

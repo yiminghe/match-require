@@ -27,8 +27,8 @@
   },
   "scripts": {
     "build": "rm -rf lib && babel src --out-dir lib",
-    "test": "node ./node_modules/mocha/bin/mocha -R list tests/spec",
-    "cover": "node ./node_modules/istanbul/lib/cli cover ./node_modules/mocha/bin/_mocha -- -R list tests/spec/",
+    "test": "jest",
+    "cover": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "lint": "eslint src",
     "pub": "npm run build && npm publish && rm -rf lib && git push origin"
   },
@@ -41,10 +41,8 @@
     "babel-preset-es2015-ie": "^6.6.2",
     "babel-preset-stage-0": "6.5.x",
     "eslint": "~0.24.0",
-    "expect.js": "~0.3.1",
-    "istanbul": "~0.2.10",
-    "coveralls": "~2.10.0",
-    "mocha": "~1.19.0"
+    "coveralls": "^2.12.0",
+    "jest": "^19.0.2"
   },
   "babel": {
     "presets": [

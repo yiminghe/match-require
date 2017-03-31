@@ -1,6 +1,5 @@
 'use strict';
 
-const expect = require('expect.js');
 const matchRequire = require('../../src');
 
 describe('match require', () => {
@@ -13,7 +12,7 @@ describe('match require', () => {
 
     const ret = matchRequire.findAll(content);
 
-    expect(ret).to.eql(['3', '4']);
+    expect(ret).toEqual(['3', '4']);
   });
 
   it('replaceAll works', () => {
@@ -27,7 +26,7 @@ describe('match require', () => {
       return dep === '4' ? '5' : dep;
     });
 
-    expect(ret).to.eql([
+    expect(ret).toEqual([
       'require("3");',
       '',
       'require("5")'
@@ -49,13 +48,13 @@ describe('match require', () => {
 
     const ret = matchRequire.findAll(content);
 
-    expect(ret).to.eql(['3', '4', '5']);
+    expect(ret).toEqual(['3', '4', '5']);
   });
 
   describe('splitPackageName', () => {
     it('works for xx', () => {
       const name = 'xx';
-      expect(matchRequire.splitPackageName(name)).to.eql({
+      expect(matchRequire.splitPackageName(name)).toEqual({
         packageName: 'xx',
         suffix: ''
       });
@@ -63,7 +62,7 @@ describe('match require', () => {
 
     it('works for xx/yy', () => {
       const name = 'xx/yy';
-      expect(matchRequire.splitPackageName(name)).to.eql({
+      expect(matchRequire.splitPackageName(name)).toEqual({
         packageName: 'xx',
         suffix: '/yy'
       });
@@ -71,7 +70,7 @@ describe('match require', () => {
 
     it('works for @xx/yy', () => {
       const name = '@xx/yy';
-      expect(matchRequire.splitPackageName(name)).to.eql({
+      expect(matchRequire.splitPackageName(name)).toEqual({
         packageName: '@xx/yy',
         suffix: ''
       });
@@ -79,7 +78,7 @@ describe('match require', () => {
 
     it('works for @xx/yy/zz', () => {
       const name = '@xx/yy/zz';
-      expect(matchRequire.splitPackageName(name)).to.eql({
+      expect(matchRequire.splitPackageName(name)).toEqual({
         packageName: '@xx/yy',
         suffix: '/zz'
       });
@@ -88,15 +87,15 @@ describe('match require', () => {
 
   describe('isRelativeModule', () => {
     it('works for xx', () => {
-      expect(matchRequire.isRelativeModule('xx')).to.be(false);
+      expect(matchRequire.isRelativeModule('xx')).toBe(false);
     });
 
     it('works for ../x', () => {
-      expect(matchRequire.isRelativeModule('../xx')).to.be(true);
+      expect(matchRequire.isRelativeModule('../xx')).toBe(true);
     });
 
     it('works for ./x', () => {
-      expect(matchRequire.isRelativeModule('./xx')).to.be(true);
+      expect(matchRequire.isRelativeModule('./xx')).toBe(true);
     });
   });
 });
